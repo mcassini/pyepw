@@ -3338,6 +3338,7 @@ class DesignCondition(object):
         out.append(self._to_str(self.dbmax50years))
         return ",".join(out)
 
+
     def __str__(self):
         return self.export(True)
 
@@ -6008,7 +6009,7 @@ class WeatherData(object):
         return self._relative_humidity
 
     @relative_humidity.setter
-    def relative_humidity(self, value=999):
+    def relative_humidityrelative_humidity(self, value=999):
         """Corresponds to IDD Field `relative_humidity`
 
         Args:
@@ -7101,6 +7102,64 @@ class WeatherData(object):
     def __str__(self):
         return self.export(True)
 
+    def export_data(self, top=True):
+        """Exports object to its string representation.
+        Args:
+            top (bool):  if True appends `internal_name` before values.
+                All non list objects should be exported with value top=True,
+                all list objects, that are embedded in as fields inlist objects
+                should be exported with `top`=False
+        Returns:
+            str: The objects string representation
+        """
+        import datetime as dt
+        out = []
+        if top:
+            out.append(self._internal_name)
+
+        if self.minute > 60 :
+            real_minute = self.minute%6
+            add2hour = int(self.minute/60)
+        elif self.minute < 60:
+            real_minute = self.minute
+            add2hour = 0
+        elif self.minute == 60:
+            real_minute = 0
+            add2hour = 0
+        else:
+            real_minute = 0
+            add2hour = 0
+        out.append(dt.datetime(self.year, self.month, self.day, self.hour - 1 + add2hour, real_minute))
+        out.append(self.dry_bulb_temperature)
+        out.append(self.dew_point_temperature)
+        out.append(self.relative_humidity)
+        out.append(self.atmospheric_station_pressure)
+        out.append(self.extraterrestrial_horizontal_radiation)
+        out.append(self.extraterrestrial_direct_normal_radiation)
+        out.append(self.horizontal_infrared_radiation_intensity)
+        out.append(self.global_horizontal_radiation)
+        out.append(self.direct_normal_radiation)
+        out.append(self.diffuse_horizontal_radiation)
+        out.append(self.global_horizontal_illuminance)
+        out.append(self.direct_normal_illuminance)
+        out.append(self.diffuse_horizontal_illuminance)
+        out.append(self.zenith_luminance)
+        out.append(self.wind_direction)
+        out.append(self.wind_speed)
+        out.append(self.total_sky_cover)
+        out.append(self.opaque_sky_cover)
+        out.append(self.visibility)
+        out.append(self.ceiling_height)
+        out.append(self.present_weather_observation)
+        out.append(self.present_weather_codes)
+        out.append(self.precipitable_water)
+        out.append(self.aerosol_optical_depth)
+        out.append(self.snow_depth)
+        out.append(self.days_since_last_snowfall)
+        out.append(self.albedo)
+        out.append(self.liquid_precipitation_depth)
+        out.append(self.liquid_precipitation_quantity)
+        return out
 
 class EPW(object):
 
